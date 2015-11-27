@@ -1,0 +1,3 @@
+[0m[[0mdebug[0m] [0mCopy resource mappings: [0m
+[0m[[0mdebug[0m] [0m	(/Users/leon/Workspace/Scala/Facebook/server/src/main/resources/application.conf,/Users/leon/Workspace/Scala/Facebook/server/target/scala-2.11/classes/application.conf)[0m
+[0m[[0mdebug[0m] [0m	(/Users/leon/Workspace/Scala/Facebook/server/src/main/resources/logback.xml,/Users/leon/Workspace/Scala/Facebook/server/target/scala-2.11/classes/logback.xml)[0m

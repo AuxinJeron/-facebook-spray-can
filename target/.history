@@ -1,0 +1,11 @@
+compile
+clear
+compile
+sbt
+compile
+run
+project server
+project restServer
+project server
+project
+project server

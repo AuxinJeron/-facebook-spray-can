@@ -1,0 +1,22 @@
+run
+run -deprecation -feature
+compile
+run 
+run
+run 
+run
+run 
+compile
+run
+run 
+run
+run 
+run
+run 
+run
+compile
+run
+compile
+run
+compile
+run
