@@ -1,0 +1,8 @@
+compile
+run
+ccc
+run
+run 100 10
+run
+run 100 10
+run 10000 10
