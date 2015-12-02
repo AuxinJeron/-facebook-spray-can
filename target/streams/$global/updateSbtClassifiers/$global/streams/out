@@ -703,9 +703,9 @@
 [debug] 	[NOT REQUIRED] org.scala-sbt#test-agent;0.13.8!test-agent.jar
 [debug] 	[NOT REQUIRED] org.scala-sbt#test-interface;1.0!test-interface.jar
 [debug] 	[NOT REQUIRED] org.scala-sbt#apply-macro;0.13.8!apply-macro.jar
-[debug] :: resolution report :: resolve 1375ms :: artifacts dl 44ms
+[debug] :: resolution report :: resolve 1420ms :: artifacts dl 118ms
 [debug] 	report for default#facebook$sbt_2.10;0.1-SNAPSHOT default produced in /Users/leon/Workspace/Scala/Facebook/target/resolution-cache/reports/default-facebook$sbt_2.10-default.xml
-[debug] 	resolve done (1375ms resolve - 44ms download)
+[debug] 	resolve done (1420ms resolve - 118ms download)
 [debug] Using inline dependencies specified in Scala.
 [debug] :: resolving dependencies :: default#facebook$sources_2.10;0.1-SNAPSHOT
 [debug] 	confs: [default]
@@ -1069,6 +1069,6 @@
 [debug] 	[NOT REQUIRED] org.scala-sbt#precompiled-2_8_2;0.13.8!precompiled-2_8_2.jar(src)
 [debug] 	[NOT REQUIRED] org.scala-sbt#precompiled-2_9_2;0.13.8!precompiled-2_9_2.jar(src)
 [debug] 	[NOT REQUIRED] org.scala-sbt#precompiled-2_9_3;0.13.8!precompiled-2_9_3.jar(src)
-[debug] :: resolution report :: resolve 205ms :: artifacts dl 74ms
+[debug] :: resolution report :: resolve 476ms :: artifacts dl 81ms
 [debug] 	report for default#facebook$sources_2.10;0.1-SNAPSHOT default produced in /Users/leon/Workspace/Scala/Facebook/target/resolution-cache/reports/default-facebook$sources_2.10-default.xml
-[debug] 	resolve done (205ms resolve - 74ms download)
+[debug] 	resolve done (476ms resolve - 81ms download)

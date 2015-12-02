@@ -703,9 +703,9 @@
 [debug] 	[NOT REQUIRED] org.scala-sbt#test-agent;0.13.8!test-agent.jar
 [debug] 	[NOT REQUIRED] org.scala-sbt#test-interface;1.0!test-interface.jar
 [debug] 	[NOT REQUIRED] org.scala-sbt#apply-macro;0.13.8!apply-macro.jar
-[debug] :: resolution report :: resolve 550ms :: artifacts dl 24ms
+[debug] :: resolution report :: resolve 963ms :: artifacts dl 50ms
 [debug] 	report for restserver#restserver$sbt_2.11;1.0 default produced in /Users/leon/Workspace/Scala/Facebook/restServer/target/resolution-cache/reports/restserver-restserver$sbt_2.11-default.xml
-[debug] 	resolve done (550ms resolve - 24ms download)
+[debug] 	resolve done (963ms resolve - 50ms download)
 [debug] Using inline dependencies specified in Scala.
 [debug] :: resolving dependencies :: restserver#restserver$sources_2.11;1.0
 [debug] 	confs: [default]
@@ -1069,6 +1069,6 @@
 [debug] 	[NOT REQUIRED] org.scala-sbt#precompiled-2_8_2;0.13.8!precompiled-2_8_2.jar(src)
 [debug] 	[NOT REQUIRED] org.scala-sbt#precompiled-2_9_2;0.13.8!precompiled-2_9_2.jar(src)
 [debug] 	[NOT REQUIRED] org.scala-sbt#precompiled-2_9_3;0.13.8!precompiled-2_9_3.jar(src)
-[debug] :: resolution report :: resolve 113ms :: artifacts dl 27ms
+[debug] :: resolution report :: resolve 353ms :: artifacts dl 60ms
 [debug] 	report for restserver#restserver$sources_2.11;1.0 default produced in /Users/leon/Workspace/Scala/Facebook/restServer/target/resolution-cache/reports/restserver-restserver$sources_2.11-default.xml
-[debug] 	resolve done (113ms resolve - 27ms download)
+[debug] 	resolve done (353ms resolve - 60ms download)

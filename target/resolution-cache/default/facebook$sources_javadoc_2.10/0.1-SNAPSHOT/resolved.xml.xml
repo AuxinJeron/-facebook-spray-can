@@ -4,7 +4,7 @@
 		module="facebook$sources_javadoc_2.10"
 		revision="0.1-SNAPSHOT"
 		status="integration"
-		publication="20151127012128"
+		publication="20151128143538"
 	/>
 	<configurations>
 		<conf name="compile" visibility="public" description=""/>

@@ -45,3 +45,11 @@ lazy val restServer = Project("restServer", file("restServer")).
     compile(sprayCan, sprayRouting) ++
     runtime(logback)
   )
+
+lazy val httpClient = Project("client", file("client")).
+  dependsOn(httpServer).
+  settings(commonSettings: _*).
+  settings(libraryDependencies ++=
+    compile(sprayClient) ++
+    runtime(logback)
+  )

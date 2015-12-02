@@ -4,7 +4,7 @@
 		module="facebook$sbt_2.10"
 		revision="0.1-SNAPSHOT"
 		status="integration"
-		publication="20151127012118"
+		publication="20151128143525"
 	/>
 	<configurations>
 		<conf name="default" visibility="public"/>

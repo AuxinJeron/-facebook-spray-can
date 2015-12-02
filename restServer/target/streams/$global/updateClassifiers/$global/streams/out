@@ -6,7 +6,7 @@
 [debug] == resolving dependencies for restserver#restserver$sources_javadoc_2.11;1.0 [compile]
 [debug] == resolving dependencies restserver#restserver$sources_javadoc_2.11;1.0->org.scala-lang#scala-library;2.11.7 [compile->default(compile)]
 [info] Resolving org.scala-lang#scala-library;2.11.7 ...
-[debug] sbt-chain: Checking cache for: sbt.ivyint.MergedDescriptors@7488766c
+[debug] sbt-chain: Checking cache for: sbt.ivyint.MergedDescriptors@5285f710
 [debug] sbt-chain: module revision found in cache: org.scala-lang#scala-library;2.11.7
 [debug] 	found org.scala-lang#scala-library;2.11.7 in sbt-chain
 [debug] 	[2.11.7] org.scala-lang#scala-library;2.11.7
@@ -15,10 +15,10 @@
 [debug] == resolving dependencies restserver#restserver$sources_javadoc_2.11;1.0->org.scala-lang#scala-library;2.11.7 [compile->master]
 [debug] == resolving dependencies restserver#restserver$sources_javadoc_2.11;1.0->com.typesafe.akka#akka-actor_2.11;2.3-SNAPSHOT [compile->default(compile)]
 [info] Resolving com.typesafe.akka#akka-actor_2.11;2.3-SNAPSHOT ...
-[debug] sbt-chain: Checking cache for: sbt.ivyint.MergedDescriptors@d21e7ed
+[debug] sbt-chain: Checking cache for: sbt.ivyint.MergedDescriptors@4daa63fa
 [debug] don't use cache for com.typesafe.akka#akka-actor_2.11;2.3-SNAPSHOT: changing=true
 [info] Resolving com.typesafe.akka#akka-actor_2.11;2.3-SNAPSHOT ...
-[debug] sbt-chain-delegate: Checking cache for: sbt.ivyint.MergedDescriptors@d21e7ed
+[debug] sbt-chain-delegate: Checking cache for: sbt.ivyint.MergedDescriptors@4daa63fa
 [debug] don't use cache for com.typesafe.akka#akka-actor_2.11;2.3-SNAPSHOT: changing=true
 [debug] don't use cache for com.typesafe.akka#akka-actor_2.11;2.3-SNAPSHOT: changing=true
 [debug] 		tried /Users/leon/.ivy2/local/com.typesafe.akka/akka-actor_2.11/2.3-SNAPSHOT/ivys/ivy.xml
@@ -42,7 +42,7 @@
 [debug] == resolving dependencies restserver#restserver$sources_javadoc_2.11;1.0->com.typesafe.akka#akka-actor_2.11;2.3-SNAPSHOT [compile->master]
 [debug] == resolving dependencies restserver#restserver$sources_javadoc_2.11;1.0->com.typesafe#config;1.2.1 [compile->default(compile)]
 [info] Resolving com.typesafe#config;1.2.1 ...
-[debug] sbt-chain: Checking cache for: sbt.ivyint.MergedDescriptors@19842a5c
+[debug] sbt-chain: Checking cache for: sbt.ivyint.MergedDescriptors@df70401
 [debug] sbt-chain: module revision found in cache: com.typesafe#config;1.2.1
 [debug] 	found com.typesafe#config;1.2.1 in sbt-chain
 [debug] == resolving dependencies restserver#restserver$sources_javadoc_2.11;1.0->com.typesafe#config;1.2.1 [compile->runtime]
@@ -50,10 +50,10 @@
 [debug] == resolving dependencies restserver#restserver$sources_javadoc_2.11;1.0->com.typesafe#config;1.2.1 [compile->master]
 [debug] == resolving dependencies restserver#restserver$sources_javadoc_2.11;1.0->com.typesafe.akka#akka-remote_2.11;2.3-SNAPSHOT [compile->default(compile)]
 [info] Resolving com.typesafe.akka#akka-remote_2.11;2.3-SNAPSHOT ...
-[debug] sbt-chain: Checking cache for: sbt.ivyint.MergedDescriptors@3c33bf3f
+[debug] sbt-chain: Checking cache for: sbt.ivyint.MergedDescriptors@2dd1ba0d
 [debug] don't use cache for com.typesafe.akka#akka-remote_2.11;2.3-SNAPSHOT: changing=true
 [info] Resolving com.typesafe.akka#akka-remote_2.11;2.3-SNAPSHOT ...
-[debug] sbt-chain-delegate: Checking cache for: sbt.ivyint.MergedDescriptors@3c33bf3f
+[debug] sbt-chain-delegate: Checking cache for: sbt.ivyint.MergedDescriptors@2dd1ba0d
 [debug] don't use cache for com.typesafe.akka#akka-remote_2.11;2.3-SNAPSHOT: changing=true
 [debug] don't use cache for com.typesafe.akka#akka-remote_2.11;2.3-SNAPSHOT: changing=true
 [debug] 		tried /Users/leon/.ivy2/local/com.typesafe.akka/akka-remote_2.11/2.3-SNAPSHOT/ivys/ivy.xml
@@ -77,7 +77,7 @@
 [debug] == resolving dependencies restserver#restserver$sources_javadoc_2.11;1.0->com.typesafe.akka#akka-remote_2.11;2.3-SNAPSHOT [compile->master]
 [debug] == resolving dependencies restserver#restserver$sources_javadoc_2.11;1.0->io.netty#netty;3.8.0.Final [compile->default(compile)]
 [info] Resolving io.netty#netty;3.8.0.Final ...
-[debug] sbt-chain: Checking cache for: sbt.ivyint.MergedDescriptors@dc76548
+[debug] sbt-chain: Checking cache for: sbt.ivyint.MergedDescriptors@16830a7a
 [debug] sbt-chain: module revision found in cache: io.netty#netty;3.8.0.Final
 [debug] 	found io.netty#netty;3.8.0.Final in sbt-chain
 [debug] == resolving dependencies restserver#restserver$sources_javadoc_2.11;1.0->io.netty#netty;3.8.0.Final [compile->runtime]
@@ -85,7 +85,7 @@
 [debug] == resolving dependencies restserver#restserver$sources_javadoc_2.11;1.0->io.netty#netty;3.8.0.Final [compile->master]
 [debug] == resolving dependencies restserver#restserver$sources_javadoc_2.11;1.0->com.google.protobuf#protobuf-java;2.5.0 [compile->default(compile)]
 [info] Resolving com.google.protobuf#protobuf-java;2.5.0 ...
-[debug] sbt-chain: Checking cache for: sbt.ivyint.MergedDescriptors@137bdf85
+[debug] sbt-chain: Checking cache for: sbt.ivyint.MergedDescriptors@7050f40d
 [debug] sbt-chain: module revision found in cache: com.google.protobuf#protobuf-java;2.5.0
 [debug] 	found com.google.protobuf#protobuf-java;2.5.0 in sbt-chain
 [debug] == resolving dependencies restserver#restserver$sources_javadoc_2.11;1.0->com.google.protobuf#protobuf-java;2.5.0 [compile->runtime]
@@ -93,7 +93,7 @@
 [debug] == resolving dependencies restserver#restserver$sources_javadoc_2.11;1.0->com.google.protobuf#protobuf-java;2.5.0 [compile->master]
 [debug] == resolving dependencies restserver#restserver$sources_javadoc_2.11;1.0->org.uncommons.maths#uncommons-maths;1.2.2a [compile->default(compile)]
 [info] Resolving org.uncommons.maths#uncommons-maths;1.2.2a ...
-[debug] sbt-chain: Checking cache for: sbt.ivyint.MergedDescriptors@3df02958
+[debug] sbt-chain: Checking cache for: sbt.ivyint.MergedDescriptors@14a10988
 [debug] sbt-chain: module revision found in cache: org.uncommons.maths#uncommons-maths;1.2.2a
 [debug] 	found org.uncommons.maths#uncommons-maths;1.2.2a in sbt-chain
 [debug] == resolving dependencies restserver#restserver$sources_javadoc_2.11;1.0->org.uncommons.maths#uncommons-maths;1.2.2a [compile->runtime]
@@ -101,7 +101,7 @@
 [debug] == resolving dependencies restserver#restserver$sources_javadoc_2.11;1.0->org.uncommons.maths#uncommons-maths;1.2.2a [compile->master]
 [debug] == resolving dependencies restserver#restserver$sources_javadoc_2.11;1.0->org.scala-lang.modules#scala-xml_2.11;1.0.4 [compile->default(compile)]
 [info] Resolving org.scala-lang.modules#scala-xml_2.11;1.0.4 ...
-[debug] sbt-chain: Checking cache for: sbt.ivyint.MergedDescriptors@460d029c
+[debug] sbt-chain: Checking cache for: sbt.ivyint.MergedDescriptors@4100da55
 [debug] sbt-chain: module revision found in cache: org.scala-lang.modules#scala-xml_2.11;1.0.4
 [debug] 	found org.scala-lang.modules#scala-xml_2.11;1.0.4 in sbt-chain
 [debug] == resolving dependencies restserver#restserver$sources_javadoc_2.11;1.0->org.scala-lang.modules#scala-xml_2.11;1.0.4 [compile->runtime]
@@ -109,7 +109,7 @@
 [debug] == resolving dependencies restserver#restserver$sources_javadoc_2.11;1.0->org.scala-lang.modules#scala-xml_2.11;1.0.4 [compile->master]
 [debug] == resolving dependencies restserver#restserver$sources_javadoc_2.11;1.0->io.spray#spray-json_2.11;1.3.2 [compile->default(compile)]
 [info] Resolving io.spray#spray-json_2.11;1.3.2 ...
-[debug] sbt-chain: Checking cache for: sbt.ivyint.MergedDescriptors@4a8c2725
+[debug] sbt-chain: Checking cache for: sbt.ivyint.MergedDescriptors@2425d18f
 [debug] sbt-chain: module revision found in cache: io.spray#spray-json_2.11;1.3.2
 [debug] 	found io.spray#spray-json_2.11;1.3.2 in sbt-chain
 [debug] == resolving dependencies restserver#restserver$sources_javadoc_2.11;1.0->io.spray#spray-json_2.11;1.3.2 [compile->runtime]
@@ -117,7 +117,7 @@
 [debug] == resolving dependencies restserver#restserver$sources_javadoc_2.11;1.0->io.spray#spray-json_2.11;1.3.2 [compile->master]
 [debug] == resolving dependencies restserver#restserver$sources_javadoc_2.11;1.0->io.spray#spray-can_2.11;1.3.3 [compile->default(compile)]
 [info] Resolving io.spray#spray-can_2.11;1.3.3 ...
-[debug] sbt-chain: Checking cache for: sbt.ivyint.MergedDescriptors@6a0d595
+[debug] sbt-chain: Checking cache for: sbt.ivyint.MergedDescriptors@74aa2f5d
 [debug] sbt-chain: module revision found in cache: io.spray#spray-can_2.11;1.3.3
 [debug] 	found io.spray#spray-can_2.11;1.3.3 in sbt-chain
 [debug] == resolving dependencies restserver#restserver$sources_javadoc_2.11;1.0->io.spray#spray-can_2.11;1.3.3 [compile->runtime]
@@ -125,7 +125,7 @@
 [debug] == resolving dependencies restserver#restserver$sources_javadoc_2.11;1.0->io.spray#spray-can_2.11;1.3.3 [compile->master]
 [debug] == resolving dependencies restserver#restserver$sources_javadoc_2.11;1.0->io.spray#spray-io_2.11;1.3.3 [compile->default(compile)]
 [info] Resolving io.spray#spray-io_2.11;1.3.3 ...
-[debug] sbt-chain: Checking cache for: sbt.ivyint.MergedDescriptors@123de847
+[debug] sbt-chain: Checking cache for: sbt.ivyint.MergedDescriptors@49c37653
 [debug] sbt-chain: module revision found in cache: io.spray#spray-io_2.11;1.3.3
 [debug] 	found io.spray#spray-io_2.11;1.3.3 in sbt-chain
 [debug] == resolving dependencies restserver#restserver$sources_javadoc_2.11;1.0->io.spray#spray-io_2.11;1.3.3 [compile->runtime]
@@ -133,7 +133,7 @@
 [debug] == resolving dependencies restserver#restserver$sources_javadoc_2.11;1.0->io.spray#spray-io_2.11;1.3.3 [compile->master]
 [debug] == resolving dependencies restserver#restserver$sources_javadoc_2.11;1.0->io.spray#spray-util_2.11;1.3.3 [compile->default(compile)]
 [info] Resolving io.spray#spray-util_2.11;1.3.3 ...
-[debug] sbt-chain: Checking cache for: sbt.ivyint.MergedDescriptors@5a213e8
+[debug] sbt-chain: Checking cache for: sbt.ivyint.MergedDescriptors@15c5ac88
 [debug] sbt-chain: module revision found in cache: io.spray#spray-util_2.11;1.3.3
 [debug] 	found io.spray#spray-util_2.11;1.3.3 in sbt-chain
 [debug] == resolving dependencies restserver#restserver$sources_javadoc_2.11;1.0->io.spray#spray-util_2.11;1.3.3 [compile->runtime]
@@ -141,7 +141,7 @@
 [debug] == resolving dependencies restserver#restserver$sources_javadoc_2.11;1.0->io.spray#spray-util_2.11;1.3.3 [compile->master]
 [debug] == resolving dependencies restserver#restserver$sources_javadoc_2.11;1.0->io.spray#spray-http_2.11;1.3.3 [compile->default(compile)]
 [info] Resolving io.spray#spray-http_2.11;1.3.3 ...
-[debug] sbt-chain: Checking cache for: sbt.ivyint.MergedDescriptors@141e66de
+[debug] sbt-chain: Checking cache for: sbt.ivyint.MergedDescriptors@14b4cd3
 [debug] sbt-chain: module revision found in cache: io.spray#spray-http_2.11;1.3.3
 [debug] 	found io.spray#spray-http_2.11;1.3.3 in sbt-chain
 [debug] == resolving dependencies restserver#restserver$sources_javadoc_2.11;1.0->io.spray#spray-http_2.11;1.3.3 [compile->runtime]
@@ -149,7 +149,7 @@
 [debug] == resolving dependencies restserver#restserver$sources_javadoc_2.11;1.0->io.spray#spray-http_2.11;1.3.3 [compile->master]
 [debug] == resolving dependencies restserver#restserver$sources_javadoc_2.11;1.0->org.parboiled#parboiled-scala_2.11;1.1.7 [compile->default(compile)]
 [info] Resolving org.parboiled#parboiled-scala_2.11;1.1.7 ...
-[debug] sbt-chain: Checking cache for: sbt.ivyint.MergedDescriptors@1f3c545c
+[debug] sbt-chain: Checking cache for: sbt.ivyint.MergedDescriptors@78f9e544
 [debug] sbt-chain: module revision found in cache: org.parboiled#parboiled-scala_2.11;1.1.7
 [debug] 	found org.parboiled#parboiled-scala_2.11;1.1.7 in sbt-chain
 [debug] == resolving dependencies restserver#restserver$sources_javadoc_2.11;1.0->org.parboiled#parboiled-scala_2.11;1.1.7 [compile->runtime]
@@ -157,7 +157,7 @@
 [debug] == resolving dependencies restserver#restserver$sources_javadoc_2.11;1.0->org.parboiled#parboiled-scala_2.11;1.1.7 [compile->master]
 [debug] == resolving dependencies restserver#restserver$sources_javadoc_2.11;1.0->org.parboiled#parboiled-core;1.1.7 [compile->default(compile)]
 [info] Resolving org.parboiled#parboiled-core;1.1.7 ...
-[debug] sbt-chain: Checking cache for: sbt.ivyint.MergedDescriptors@50d2d8d2
+[debug] sbt-chain: Checking cache for: sbt.ivyint.MergedDescriptors@543839ea
 [debug] sbt-chain: module revision found in cache: org.parboiled#parboiled-core;1.1.7
 [debug] 	found org.parboiled#parboiled-core;1.1.7 in sbt-chain
 [debug] == resolving dependencies restserver#restserver$sources_javadoc_2.11;1.0->org.parboiled#parboiled-core;1.1.7 [compile->runtime]
@@ -165,7 +165,7 @@
 [debug] == resolving dependencies restserver#restserver$sources_javadoc_2.11;1.0->org.parboiled#parboiled-core;1.1.7 [compile->master]
 [debug] == resolving dependencies restserver#restserver$sources_javadoc_2.11;1.0->io.spray#spray-routing_2.11;1.3.3 [compile->default(compile)]
 [info] Resolving io.spray#spray-routing_2.11;1.3.3 ...
-[debug] sbt-chain: Checking cache for: sbt.ivyint.MergedDescriptors@6f3a84c2
+[debug] sbt-chain: Checking cache for: sbt.ivyint.MergedDescriptors@2bace6fe
 [debug] sbt-chain: module revision found in cache: io.spray#spray-routing_2.11;1.3.3
 [debug] 	found io.spray#spray-routing_2.11;1.3.3 in sbt-chain
 [debug] == resolving dependencies restserver#restserver$sources_javadoc_2.11;1.0->io.spray#spray-routing_2.11;1.3.3 [compile->runtime]
@@ -173,7 +173,7 @@
 [debug] == resolving dependencies restserver#restserver$sources_javadoc_2.11;1.0->io.spray#spray-routing_2.11;1.3.3 [compile->master]
 [debug] == resolving dependencies restserver#restserver$sources_javadoc_2.11;1.0->io.spray#spray-httpx_2.11;1.3.3 [compile->default(compile)]
 [info] Resolving io.spray#spray-httpx_2.11;1.3.3 ...
-[debug] sbt-chain: Checking cache for: sbt.ivyint.MergedDescriptors@56650022
+[debug] sbt-chain: Checking cache for: sbt.ivyint.MergedDescriptors@616e3c0b
 [debug] sbt-chain: module revision found in cache: io.spray#spray-httpx_2.11;1.3.3
 [debug] 	found io.spray#spray-httpx_2.11;1.3.3 in sbt-chain
 [debug] == resolving dependencies restserver#restserver$sources_javadoc_2.11;1.0->io.spray#spray-httpx_2.11;1.3.3 [compile->runtime]
@@ -181,7 +181,7 @@
 [debug] == resolving dependencies restserver#restserver$sources_javadoc_2.11;1.0->io.spray#spray-httpx_2.11;1.3.3 [compile->master]
 [debug] == resolving dependencies restserver#restserver$sources_javadoc_2.11;1.0->org.jvnet.mimepull#mimepull;1.9.5 [compile->default(compile)]
 [info] Resolving org.jvnet.mimepull#mimepull;1.9.5 ...
-[debug] sbt-chain: Checking cache for: sbt.ivyint.MergedDescriptors@6e6b46a1
+[debug] sbt-chain: Checking cache for: sbt.ivyint.MergedDescriptors@2f7fe778
 [debug] sbt-chain: module revision found in cache: org.jvnet.mimepull#mimepull;1.9.5
 [debug] 	found org.jvnet.mimepull#mimepull;1.9.5 in sbt-chain
 [debug] == resolving dependencies restserver#restserver$sources_javadoc_2.11;1.0->org.jvnet.mimepull#mimepull;1.9.5 [compile->runtime]
@@ -189,7 +189,7 @@
 [debug] == resolving dependencies restserver#restserver$sources_javadoc_2.11;1.0->org.jvnet.mimepull#mimepull;1.9.5 [compile->master]
 [debug] == resolving dependencies restserver#restserver$sources_javadoc_2.11;1.0->com.chuusai#shapeless_2.11;1.2.4 [compile->default(compile)]
 [info] Resolving com.chuusai#shapeless_2.11;1.2.4 ...
-[debug] sbt-chain: Checking cache for: sbt.ivyint.MergedDescriptors@3dfe705
+[debug] sbt-chain: Checking cache for: sbt.ivyint.MergedDescriptors@1124ca48
 [debug] sbt-chain: module revision found in cache: com.chuusai#shapeless_2.11;1.2.4
 [debug] 	found com.chuusai#shapeless_2.11;1.2.4 in sbt-chain
 [debug] == resolving dependencies restserver#restserver$sources_javadoc_2.11;1.0->com.chuusai#shapeless_2.11;1.2.4 [compile->runtime]
@@ -352,7 +352,7 @@
 [debug] == resolving dependencies restserver#restserver$sources_javadoc_2.11;1.0->com.chuusai#shapeless_2.11;1.2.4 [runtime->master]
 [debug] == resolving dependencies restserver#restserver$sources_javadoc_2.11;1.0->ch.qos.logback#logback-classic;1.1.2 [runtime->default(compile)]
 [info] Resolving ch.qos.logback#logback-classic;1.1.2 ...
-[debug] sbt-chain: Checking cache for: sbt.ivyint.MergedDescriptors@82daf22
+[debug] sbt-chain: Checking cache for: sbt.ivyint.MergedDescriptors@6c6caa1f
 [debug] sbt-chain: module revision found in cache: ch.qos.logback#logback-classic;1.1.2
 [debug] 	found ch.qos.logback#logback-classic;1.1.2 in sbt-chain
 [debug] == resolving dependencies restserver#restserver$sources_javadoc_2.11;1.0->ch.qos.logback#logback-classic;1.1.2 [runtime->runtime]
@@ -360,7 +360,7 @@
 [debug] == resolving dependencies restserver#restserver$sources_javadoc_2.11;1.0->ch.qos.logback#logback-classic;1.1.2 [runtime->master]
 [debug] == resolving dependencies restserver#restserver$sources_javadoc_2.11;1.0->ch.qos.logback#logback-core;1.1.2 [runtime->default(compile)]
 [info] Resolving ch.qos.logback#logback-core;1.1.2 ...
-[debug] sbt-chain: Checking cache for: sbt.ivyint.MergedDescriptors@35f04f50
+[debug] sbt-chain: Checking cache for: sbt.ivyint.MergedDescriptors@2c037be
 [debug] sbt-chain: module revision found in cache: ch.qos.logback#logback-core;1.1.2
 [debug] 	found ch.qos.logback#logback-core;1.1.2 in sbt-chain
 [debug] == resolving dependencies restserver#restserver$sources_javadoc_2.11;1.0->ch.qos.logback#logback-core;1.1.2 [runtime->runtime]
@@ -368,7 +368,7 @@
 [debug] == resolving dependencies restserver#restserver$sources_javadoc_2.11;1.0->ch.qos.logback#logback-core;1.1.2 [runtime->master]
 [debug] == resolving dependencies restserver#restserver$sources_javadoc_2.11;1.0->org.slf4j#slf4j-api;1.7.6 [runtime->default(compile)]
 [info] Resolving org.slf4j#slf4j-api;1.7.6 ...
-[debug] sbt-chain: Checking cache for: sbt.ivyint.MergedDescriptors@20ee57a4
+[debug] sbt-chain: Checking cache for: sbt.ivyint.MergedDescriptors@11e4cdd2
 [debug] sbt-chain: module revision found in cache: org.slf4j#slf4j-api;1.7.6
 [debug] 	found org.slf4j#slf4j-api;1.7.6 in sbt-chain
 [debug] == resolving dependencies restserver#restserver$sources_javadoc_2.11;1.0->org.slf4j#slf4j-api;1.7.6 [runtime->runtime]
@@ -1472,27 +1472,9 @@
 [debug] 	[NOT REQUIRED] org.scala-lang.modules#scala-xml_2.11;1.0.4!scala-xml_2.11.jar(src)
 [debug] 	[NOT REQUIRED] org.scala-lang.modules#scala-xml_2.11;1.0.4!scala-xml_2.11.jar(doc)
 [debug] 	[NOT REQUIRED] org.scala-lang.modules#scala-xml_2.11;1.0.4!scala-xml_2.11.jar
-[debug] 		tried /Users/leon/.ivy2/local/io.spray/spray-json_2.11/1.3.2/jars/spray-json_2.11.jar
-[debug] 		tried /Users/leon/.ivy2/local/io.spray/spray-json_2.11/1.3.2/srcs/spray-json_2.11-sources.jar
-[debug] 		tried /Users/leon/.ivy2/local/io.spray/spray-json_2.11/1.3.2/docs/spray-json_2.11-javadoc.jar
-[debug] 		tried https://repo1.maven.org/maven2/io/spray/spray-json_2.11/1.3.2/spray-json_2.11-1.3.2.jar
-[info] downloading https://repo1.maven.org/maven2/io/spray/spray-json_2.11/1.3.2/spray-json_2.11-1.3.2.jar ...
-[debug] 	public: downloading https://repo1.maven.org/maven2/io/spray/spray-json_2.11/1.3.2/spray-json_2.11-1.3.2.jar
-[debug] 	public: downloading https://repo1.maven.org/maven2/io/spray/spray-json_2.11/1.3.2/spray-json_2.11-1.3.2.jar.sha1
-[debug] sha1 OK for https://repo1.maven.org/maven2/io/spray/spray-json_2.11/1.3.2/spray-json_2.11-1.3.2.jar
-[info] 	[SUCCESSFUL ] io.spray#spray-json_2.11;1.3.2!spray-json_2.11.jar (527ms)
-[debug] 		tried https://repo1.maven.org/maven2/io/spray/spray-json_2.11/1.3.2/spray-json_2.11-1.3.2-sources.jar
-[info] downloading https://repo1.maven.org/maven2/io/spray/spray-json_2.11/1.3.2/spray-json_2.11-1.3.2-sources.jar ...
-[debug] 	public: downloading https://repo1.maven.org/maven2/io/spray/spray-json_2.11/1.3.2/spray-json_2.11-1.3.2-sources.jar
-[debug] 	public: downloading https://repo1.maven.org/maven2/io/spray/spray-json_2.11/1.3.2/spray-json_2.11-1.3.2-sources.jar.sha1
-[debug] sha1 OK for https://repo1.maven.org/maven2/io/spray/spray-json_2.11/1.3.2/spray-json_2.11-1.3.2-sources.jar
-[info] 	[SUCCESSFUL ] io.spray#spray-json_2.11;1.3.2!spray-json_2.11.jar(src) (280ms)
-[debug] 		tried https://repo1.maven.org/maven2/io/spray/spray-json_2.11/1.3.2/spray-json_2.11-1.3.2-javadoc.jar
-[info] downloading https://repo1.maven.org/maven2/io/spray/spray-json_2.11/1.3.2/spray-json_2.11-1.3.2-javadoc.jar ...
-[debug] 	public: downloading https://repo1.maven.org/maven2/io/spray/spray-json_2.11/1.3.2/spray-json_2.11-1.3.2-javadoc.jar
-[debug] 	public: downloading https://repo1.maven.org/maven2/io/spray/spray-json_2.11/1.3.2/spray-json_2.11-1.3.2-javadoc.jar.sha1
-[debug] sha1 OK for https://repo1.maven.org/maven2/io/spray/spray-json_2.11/1.3.2/spray-json_2.11-1.3.2-javadoc.jar
-[info] 	[SUCCESSFUL ] io.spray#spray-json_2.11;1.3.2!spray-json_2.11.jar(doc) (487ms)
+[debug] 	[NOT REQUIRED] io.spray#spray-json_2.11;1.3.2!spray-json_2.11.jar
+[debug] 	[NOT REQUIRED] io.spray#spray-json_2.11;1.3.2!spray-json_2.11.jar(src)
+[debug] 	[NOT REQUIRED] io.spray#spray-json_2.11;1.3.2!spray-json_2.11.jar(doc)
 [debug] 	[NOT REQUIRED] io.spray#spray-can_2.11;1.3.3!spray-can_2.11.jar(src)
 [debug] 	[NOT REQUIRED] io.spray#spray-can_2.11;1.3.3!spray-can_2.11.jar
 [debug] 	[NOT REQUIRED] io.spray#spray-can_2.11;1.3.3!spray-can_2.11.jar(doc)
@@ -1540,7 +1522,7 @@
 [debug] 	[NOT REQUIRED] org.scala-lang.modules#scala-parser-combinators_2.11;1.0.4!scala-parser-combinators_2.11.jar(doc)
 [debug] 	[NOT REQUIRED] jline#jline;2.12.1!jline.jar(src)
 [debug] 	[NOT REQUIRED] jline#jline;2.12.1!jline.jar(doc)
-[debug] :: resolution report :: resolve 1181ms :: artifacts dl 1374ms
+[debug] :: resolution report :: resolve 1167ms :: artifacts dl 58ms
 [debug] 	report for restserver#restserver$sources_javadoc_2.11;1.0 compile produced in /Users/leon/Workspace/Scala/Facebook/restServer/target/resolution-cache/reports/restserver-restserver$sources_javadoc_2.11-compile.xml
 [debug] 	report for restserver#restserver$sources_javadoc_2.11;1.0 runtime produced in /Users/leon/Workspace/Scala/Facebook/restServer/target/resolution-cache/reports/restserver-restserver$sources_javadoc_2.11-runtime.xml
 [debug] 	report for restserver#restserver$sources_javadoc_2.11;1.0 test produced in /Users/leon/Workspace/Scala/Facebook/restServer/target/resolution-cache/reports/restserver-restserver$sources_javadoc_2.11-test.xml
@@ -1554,4 +1536,4 @@
 [debug] 	report for restserver#restserver$sources_javadoc_2.11;1.0 docs produced in /Users/leon/Workspace/Scala/Facebook/restServer/target/resolution-cache/reports/restserver-restserver$sources_javadoc_2.11-docs.xml
 [debug] 	report for restserver#restserver$sources_javadoc_2.11;1.0 pom produced in /Users/leon/Workspace/Scala/Facebook/restServer/target/resolution-cache/reports/restserver-restserver$sources_javadoc_2.11-pom.xml
 [debug] 	report for restserver#restserver$sources_javadoc_2.11;1.0 scala-tool produced in /Users/leon/Workspace/Scala/Facebook/restServer/target/resolution-cache/reports/restserver-restserver$sources_javadoc_2.11-scala-tool.xml
-[debug] 	resolve done (1181ms resolve - 1374ms download)
+[debug] 	resolve done (1167ms resolve - 58ms download)
