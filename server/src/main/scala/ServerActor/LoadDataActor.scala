@@ -84,6 +84,14 @@ object DataManager {
     }
   }
 
+  def shareFile(file: File, userId: String, enAESKey: String) = {
+    val userOption = userProfileMap.get(userId)
+    var user: UserProfile = null
+    userOption match {
+      
+    }
+  }
+
   def getFile(fileId: String) : AnyRef = {
     return fileMap.get(fileId)
   }

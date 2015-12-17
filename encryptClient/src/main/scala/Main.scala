@@ -10,7 +10,7 @@ import com.sun.org.apache.xml.internal.security.utils.Base64
 import shapeless.~>
 import spray.http._
 
-import scala.concurrent.Await
+import scala.concurrent.{Future, Await}
 import scala.io.StdIn
 import scala.util.{Random, Success, Failure}
 import scala.concurrent.duration._
@@ -52,6 +52,8 @@ object MasterCase {
   case class FindStranger()
   case class UploadFile(userId: String, filename: String)
   case class FinishUploadFile()
+  case class DownloadFile(userId: String, fileId: String)
+  case class FinishGetFile()
   case class ProcessOperation(args: Array[String])
   case class NextOperation()
 }
@@ -64,6 +66,7 @@ object SimulatorCase {
   case class FindStrangerByFriends(friendListJson: AnyRef, strangerId: String, hopNum: Int)
   case class UploadFile(userId: String, filename: String)
   case class GetFile(fileId: String)
+  case class FetchFile(url: String, enAESKey: String)
 }
 
 object DataStore {
@@ -100,6 +103,9 @@ class Master(val simulatorNum: Int, val friendNum: Int) extends Actor {
       val file = args(2).toString
       if (method == "upload") {
         self ! MasterCase.UploadFile(userId, file)
+      }
+      else if (method == "download") {
+        self ! MasterCase.DownloadFile(userId, file)
       }
     }
     else {
@@ -174,6 +180,10 @@ class Master(val simulatorNum: Int, val friendNum: Int) extends Actor {
     case MasterCase.UploadFile(userId: String, filename: String) =>
       this.getActorRef(userId) ! SimulatorCase.UploadFile(userId, filename)
     case MasterCase.FinishUploadFile() =>
+      self ! MasterCase.NextOperation()
+    case MasterCase.DownloadFile(userId: String, fileId: String) =>
+      this.getActorRef(userId) ! SimulatorCase.GetFile(fileId)
+    case MasterCase.FinishGetFile() =>
       self ! MasterCase.NextOperation()
     case MasterCase.ProcessOperation(args: Array[String]) =>
       println("Receive process operation message.")
@@ -366,26 +376,23 @@ class EncryptSimulator(val userId: String) extends Actor {
     val bArray = Stream.continually(bis.read).takeWhile(-1 !=).map(_.toByte).toArray
     val secretKey = KeyGenerator.getInstance("AES").generateKey()
     val AESKey = Base64.encode(secretKey.getEncoded)
-    println("AES is " + AESKey)
+    println("Original AES is " + AESKey)
     val enAESKey = rsa.encrypt(AESKey.getBytes)
     var enAESKeyString = ""
     for (value <- enAESKey) {
-      enAESKeyString += value
-      println("value is " + value)
+      enAESKeyString += value + " "
     }
-    println("enAES is " + enAESKey)
-    println("enAESString is " + enAESKeyString)
-    val toBigIntArray = enAESKeyString.split("\\W+").map(x => BigInt(x))
-    var temp = ""
-    for (value <- toBigIntArray) {
-      temp += value
-      println("value is " + value)
-    }
-    println("temp is " + temp)
-    println("toBigIntArray is " + toBigIntArray)
-    val deAESKey = rsa.decrypt(toBigIntArray)
-    println("deAES is " + Base64.encode(deAESKey))
-
+//    println("enAES is " + enAESKey)
+//    println("enAESString is " + enAESKeyString)
+//    val toBigIntArray = enAESKeyString.split(" ").map(x => BigInt(x))
+//    var temp = ""
+//    for (value <- toBigIntArray) {
+//      temp += value + " "
+//    }
+//    println("temp is " + temp)
+//    println("toBigIntArray is " + toBigIntArray)
+//    val deAESKey = rsa.decrypt(toBigIntArray)
+//    println("deAES is " + new String(deAESKey))
     val httpData = HttpData(AES.encrypt(bArray, AESKey))
     val httpEntity = HttpEntity(ContentTypes.`text/plain(UTF-8)`, httpData).asInstanceOf[HttpEntity.NonEmpty]
     val formFile = FormFile("mytxt", httpEntity)
@@ -424,10 +431,41 @@ class EncryptSimulator(val userId: String) extends Actor {
       case Success(GoogleApiResult(status: String, results: List[FileJson])) =>
         if (status == "Succeed")
           log.info(s"Simulator[$userId] get file [$fileId] succeed")
-        else
-          log.info(s"Simulator[$userId] get file [$fileId] failed")
-      case _ =>
+          if (results.length > 0) {
+            results(0) match {
+              case (fileJson: FileJson) =>
+                println("File url is " + fileJson.fileUrl)
+                self ! SimulatorCase.FetchFile(fileJson.fileUrl, fileJson.encryptedAES)
+            }
+          }
+        else {
+            log.info(s"Simulator[$userId] get file [$fileId] failed")
+            masterRef ! MasterCase.FinishGetFile()
+          }
+      case Success(somethingUnexpected) =>
         log.info(s"Simulator[$userId] get file [$fileId] failed")
+        masterRef ! MasterCase.FinishGetFile()
+      case Failure(error) =>
+        log.info(s"Simulator[$userId] get file [$fileId] failed")
+        masterRef ! MasterCase.FinishGetFile()
+    }
+  }
+
+  def fetchFile(url: String, enAESKey: String) = {
+    val pipeline: HttpRequest => Future[HttpResponse] = sendReceive
+    val responseFuture: Future[HttpResponse] = pipeline(Get("http://127.0.0.1:8080" + url))
+    responseFuture onComplete {
+      case Success(HttpResponse(_, entity: HttpEntity, _, _)) =>
+        println(s"Simulator[$userId] fetch file [$url] succeed")
+        val eArray = entity.data.toByteArray
+        val AESKey = new String(rsa.decrypt(enAESKey.split(" ").map(x => BigInt(x))))
+        val dArray = AES.decrypt(eArray, AESKey)
+        println("Decrypted AES key is: " + AESKey)
+        println("The content of the file is: \n" + new String(dArray))
+        masterRef ! MasterCase.FinishGetFile()
+      case _ =>
+        println(s"Simulator[$userId] fetch file [$url] failed")
+        masterRef ! MasterCase.FinishGetFile()
     }
   }
 
@@ -437,6 +475,8 @@ class EncryptSimulator(val userId: String) extends Actor {
       this.uploadFile(userId, filename)
     case SimulatorCase.GetFile(fileId: String) =>
       this.getFile(fileId)
+    case SimulatorCase.FetchFile(url: String, enAESKey: String) =>
+      this.fetchFile(url, enAESKey)
     case _ =>
   }
 }
