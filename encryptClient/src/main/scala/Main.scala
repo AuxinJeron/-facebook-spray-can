@@ -10,6 +10,7 @@ import com.sun.org.apache.xml.internal.security.utils.Base64
 import shapeless.~>
 import spray.http._
 
+import scala.collection.parallel.mutable
 import scala.concurrent.{Future, Await}
 import scala.io.StdIn
 import scala.util.{Random, Success, Failure}
@@ -54,6 +55,8 @@ object MasterCase {
   case class FinishUploadFile()
   case class DownloadFile(userId: String, fileId: String)
   case class FinishGetFile()
+  case class ShareFile(ownerId: String, fileId: String, inviteeId: String)
+  case class FinishShareFile()
   case class ProcessOperation(args: Array[String])
   case class NextOperation()
 }
@@ -67,6 +70,8 @@ object SimulatorCase {
   case class UploadFile(userId: String, filename: String)
   case class GetFile(fileId: String)
   case class FetchFile(url: String, enAESKey: String)
+  case class PreShareFile(fileId: String, inviteeId: String)
+  case class ShareFile(fileId: String, inviteedId: String, enAESKey: String)
 }
 
 object DataStore {
@@ -97,7 +102,7 @@ class Master(val simulatorNum: Int, val friendNum: Int) extends Actor {
   }
 
   def processOperation(args: Array[String]) = {
-    if (args.length == 3) {
+    if (args.length >= 3) {
       val userId = args(0).toString
       val method = args(1).toString
       val file = args(2).toString
@@ -107,9 +112,13 @@ class Master(val simulatorNum: Int, val friendNum: Int) extends Actor {
       else if (method == "download") {
         self ! MasterCase.DownloadFile(userId, file)
       }
+      else if (method == "share" && args.length >= 4) {
+        val inviteeId = args(3)
+        self ! MasterCase.ShareFile(userId, file, inviteeId)
+      }
     }
     else {
-      println("Invalid arguments. Command could be `<userId> <upload/download> <file>`")
+      println("Invalid arguments. Command could be `<userId> <upload/download> <file><inviteeId>`")
       self ! MasterCase.NextOperation()
     }
   }
@@ -184,6 +193,10 @@ class Master(val simulatorNum: Int, val friendNum: Int) extends Actor {
     case MasterCase.DownloadFile(userId: String, fileId: String) =>
       this.getActorRef(userId) ! SimulatorCase.GetFile(fileId)
     case MasterCase.FinishGetFile() =>
+      self ! MasterCase.NextOperation()
+    case MasterCase.ShareFile(ownerId: String, fileId: String, inviteeId: String) =>
+      this.getActorRef(ownerId) ! SimulatorCase.PreShareFile(fileId, inviteeId)
+    case MasterCase.FinishShareFile() =>
       self ! MasterCase.NextOperation()
     case MasterCase.ProcessOperation(args: Array[String]) =>
       println("Receive process operation message.")
@@ -469,6 +482,74 @@ class EncryptSimulator(val userId: String) extends Actor {
     }
   }
 
+  def preShareFile(fileId: String, inviteeId: String) = {
+    val pipeline = addHeader("userId", userId) ~> sendReceive ~> unmarshal[GoogleApiResult[FileJson]]
+    val responseFuture = pipeline {
+      Get("http://127.0.0.1:8080/getfile/" + fileId)
+    }
+    responseFuture onComplete {
+      case Success(GoogleApiResult(status: String, results: List[FileJson])) =>
+        if (status == "Succeed")
+          log.info(s"Simulator[$userId] get file [$fileId] succeed")
+        if (results.length > 0) {
+          results(0) match {
+            case (fileJson: FileJson) =>
+              println("File enAES is " + fileJson.encryptedAES)
+              val AESKey = new String(rsa.decrypt(fileJson.encryptedAES.split(" ").map(x => BigInt(x))))
+              println("Decrypted AESKey is " + AESKey)
+              val inviteeRsaOption: Option[RSA] = DataStore.rsaMap.get(inviteeId)
+              inviteeRsaOption match {
+                case None =>
+                  masterRef ! MasterCase.FinishGetFile()
+                case Some(inviteeRsa) =>
+                  val enAESKey = inviteeRsa.encrypt(AESKey.getBytes)
+                  var enAESKeyString = ""
+                  for (value <- enAESKey) {
+                    enAESKeyString += value + " "
+                  }
+                  println("Invitee enAES is " + enAESKeyString)
+                  self ! SimulatorCase.ShareFile(fileId, inviteeId, enAESKeyString)
+              }
+          }
+        }
+        else {
+          log.info(s"Simulator[$userId] get file [$fileId] failed")
+          masterRef ! MasterCase.FinishGetFile()
+        }
+      case Success(somethingUnexpected) =>
+        log.info(s"Simulator[$userId] get file [$fileId] failed")
+        masterRef ! MasterCase.FinishGetFile()
+      case Failure(error) =>
+        log.info(s"Simulator[$userId] get file [$fileId] failed")
+        masterRef ! MasterCase.FinishGetFile()
+    }
+  }
+
+  def shareFile(fileId: String, inviteeId: String, enAESKey: String) = {
+    val pipeline = sendReceive ~> unmarshal[GoogleApiResult[String]]
+    val responseFuture = pipeline {
+      val inviteeIdMap: collection.mutable.HashMap[String, String] = collection.mutable.HashMap[String, String]()
+      inviteeIdMap += (inviteeId -> enAESKey)
+      Post("http://127.0.0.1:8080/sharefile", new ShareFileJson(fileId, userId, inviteeIdMap.toMap))
+    }
+    responseFuture onComplete {
+      case Success(GoogleApiResult(status: String, results: List[String])) =>
+        if (status == "Succeed")
+          println(s"Simulator[$userId] share file[$fileId] succeed")
+        else
+          println(s"Simulator[$userId] share file[$fileId] failed")
+        masterRef ! MasterCase.FinishShareFile()
+      case Success(somethingUnexpected) =>
+        //log.warning(s"Simulator[$userId] add friend failed '{}'.", somethingUnexpected)
+        log.info(s"Simulator[$userId] share file[$fileId] failed")
+        masterRef ! MasterCase.FinishShareFile()
+      case Failure(error) =>
+        //log.error(error, "Couldn't get elevation")
+        log.info(s"Simulator[$userId] share file[$fileId] failed")
+        masterRef ! MasterCase.FinishShareFile()
+    }
+  }
+
   def receive = {
     case SimulatorCase.UploadFile(userId: String, filename: String) =>
       masterRef = sender()
@@ -477,6 +558,10 @@ class EncryptSimulator(val userId: String) extends Actor {
       this.getFile(fileId)
     case SimulatorCase.FetchFile(url: String, enAESKey: String) =>
       this.fetchFile(url, enAESKey)
+    case SimulatorCase.PreShareFile(fileId: String, inviteeId: String) =>
+      this.preShareFile(fileId, inviteeId)
+    case SimulatorCase.ShareFile(fileId: String, inviteeId: String, enAESKey: String) =>
+      this.shareFile(fileId, inviteeId, enAESKey)
     case _ =>
   }
 }

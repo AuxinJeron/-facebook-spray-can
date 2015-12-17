@@ -88,7 +88,10 @@ object DataManager {
     val userOption = userProfileMap.get(userId)
     var user: UserProfile = null
     userOption match {
-      
+      case Some(userOption) => user = userOption
+        file.individualAES += (user.userId -> enAESKey)
+        user.fileSet.add(file.fileId)
+      case None =>
     }
   }
 

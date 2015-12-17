@@ -25,6 +25,7 @@ object UserProfileCase {
   case class GetAlbumPhotoList(albumId: String)
   case class AddFile(addFileJson: AddFileJson)
   case class GetFile(fileId: String, userId: String)
+  case class ShareFile(shareFileJson: ShareFileJson)
   case class GetGroup(groupId: String)
   case class AddGroup(addGroupJson: AddGroupJson)
   case class AddGroupMember(addGroupMemberJson: AddGroupMemberJson)
@@ -253,6 +254,24 @@ class UserProfileActor extends Actor {
     return Some(FileJson(file.fileId, file.fromUserId, file.url, true, AESKey))
   }
 
+  def shareFile(shareFileJson: ShareFileJson) : Boolean = {
+    val fileOption = DataManager.getFile(shareFileJson.fileId)
+    var file: File = null
+    fileOption match {
+      case None => return false
+      case Some(fileOption: File) => file = fileOption
+    }
+    if (file.encrypt == false)
+      return true
+    if (file.fromUserId != shareFileJson.ownerId)
+      return false
+
+    shareFileJson.inviteeIdList.foreach{case (userId: String, enAESKey: String) => {
+      DataManager.shareFile(file, userId, enAESKey)
+    }}
+    return true
+  }
+
   def getGroup(groupId: String) : Option[GroupJson] = {
     val groupOption = DataManager.getGroup(groupId)
     var group: Group = null
@@ -351,6 +370,9 @@ class UserProfileActor extends Actor {
     case UserProfileCase.GetFile(fileId: String, userId: String) =>
       log.info("Receive case GetFile")
       sender() ! this.getFile(fileId, userId)
+    case UserProfileCase.ShareFile(shareFileJson: ShareFileJson) =>
+      log.info("Receive case ShareFile")
+      sender() ! this.shareFile(shareFileJson)
     case UserProfileCase.GetGroup(groupId: String) =>
       log.info("Receive case GetGroup")
       sender() ! this.getGroup(groupId)

@@ -343,6 +343,23 @@ trait RouteService extends HttpService {
         }
       }
     } ~
+    path("sharefile" ) {
+      post {
+        decompressRequest() {
+          entity(as[ShareFileJson]) { shareFileJson =>
+            val actor = actorRefFactory.actorSelection("/user/handler/UserProfileActor")
+            val future: Future[AnyRef] = Patterns.ask(actor, UserProfileCase.ShareFile(shareFileJson), timeout)
+            val result = Await.result(future, timeout.duration)
+            complete {
+              if (result == true)
+                GoogleApiResult[String]("Succeed", List("Succeed"))
+              else
+                GoogleApiResult[String]("Failed", List("Failed"))
+            }
+          }
+        }
+      }
+    } ~
     path("uploadfile" ) {
       post {
         (hv("userId") & hv("encrypt") & hv("AES")) { (userIdOption, encryptOption, AESKeyOption) =>
