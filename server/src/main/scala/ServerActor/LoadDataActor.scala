@@ -18,6 +18,10 @@ object DataManager {
   var albumMap : HashMap[String, Album] = new mutable.HashMap[String, Album]()
   var photoMap : HashMap[String, Photo] = new mutable.HashMap[String, Photo]()
   var groupMap : HashMap[String, Group] = new mutable.HashMap[String, Group]()
+  var fileMap : HashMap[String, File] = new mutable.HashMap[String, File]()
+  var userPrivateKeyMap: HashMap[String, String] = new mutable.HashMap[String, String]()
+  var userPublicKeyMap: HashMap[String, String] = new mutable.HashMap[String, String]()
+  var groupPrivateKeyMap: HashMap[String, String] = new mutable.HashMap[String, String]()
 
   def getUser(userId: String) : AnyRef = {
     return userProfileMap.get(userId)
@@ -69,6 +73,19 @@ object DataManager {
 
   def getPhoto(photoId: String) : AnyRef = {
     return photoMap.get(photoId)
+  }
+
+  def addFile(file: File) = {
+    fileMap += (file.fileId -> file)
+    val userOption = userProfileMap.get(file.fromUserId)
+    userOption match {
+      case None =>
+      case Some(userProfile) => userProfile.fileSet.add(file.fileId)
+    }
+  }
+
+  def getFile(fileId: String) : AnyRef = {
+    return fileMap.get(fileId)
   }
 
   def getGroup(groupId: String) : AnyRef = {

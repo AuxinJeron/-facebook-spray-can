@@ -53,3 +53,11 @@ lazy val httpClient = Project("client", file("client")).
     compile(sprayClient) ++
     runtime(logback)
   )
+
+lazy val encryptClient = Project("encryptClient", file("encryptClient")).
+  dependsOn(httpServer).
+  settings(commonSettings: _*).
+  settings(libraryDependencies ++=
+  compile(sprayClient) ++
+    runtime(logback)
+  )

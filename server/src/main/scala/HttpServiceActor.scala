@@ -25,7 +25,7 @@ class RouterActor extends Actor with RouteService {
   loadDataActor ! LoadDataCase.Start
 
   // init actor pool
-  val actorsNum = 1000
+  val actorsNum = 100
   val userProfileActors = actorRefFactory.actorOf(Props(new UserProfileActor()).withRouter(RoundRobinPool(actorsNum)), name = "UserProfileActor")
   //val userProfileActors = actorRefFactory.actorOf(Props(new UserProfileActor()), name = "UserProfileActor")
 
@@ -37,6 +37,7 @@ trait RouteService extends HttpService {
   import spray.httpx.SprayJsonSupport._
 
   implicit def executionContext = actorRefFactory.dispatcher
+  implicit def hv(name: String) = optionalHeaderValueByName(name)
   val timeout = new Timeout(Duration.create(5, "seconds"))
 
   val demoRoute = {
@@ -157,6 +158,19 @@ trait RouteService extends HttpService {
               else
                 GoogleApiResult[String]("Failed", List("Failed"))
             }
+          }
+        }
+      }
+    } ~
+    path("user" / "files" / Segment) { userId =>
+      get {
+        val actor = actorRefFactory.actorSelection("/user/handler/UserProfileActor")
+        val future: Future[AnyRef] = Patterns.ask(actor, UserProfileCase.GetUserFiles(userId), timeout)
+        val fileListJson = Await.result(future, timeout.duration)
+        complete {
+          fileListJson match {
+            case None => GoogleApiResult[String]("Succeed", List("null"))
+            case Some(fileListJson: FileListJson) => GoogleApiResult[FileListJson]("Success", List(fileListJson))
           }
         }
       }
@@ -284,7 +298,7 @@ trait RouteService extends HttpService {
                   (contentType, fileName, result)
                 case _ =>
               }
-              s"""{"status": "Processed POST request, details=$details" }"""
+              s"""{"status": "Processed POST request, details=$details }"""
             }
           }
         }
@@ -305,6 +319,90 @@ trait RouteService extends HttpService {
     } ~
     pathPrefix("img") {
       getFromDirectory("server/img")
+    } ~
+    pathPrefix("file") {
+      getFromDirectory("server/file")
+    } ~
+    path("getfile" / Segment) { fileId =>
+      get {
+        (hv("userId")) { (userIdOption) =>
+          var userId = ""
+          userIdOption match {
+            case Some(userIdOption) => userId = userIdOption
+            case None =>
+          }
+          val actor = actorRefFactory.actorSelection("/user/handler/UserProfileActor")
+          val future: Future[AnyRef] = Patterns.ask(actor, UserProfileCase.GetFile(fileId, userId), timeout)
+          val fileJsonOption = Await.result(future, timeout.duration)
+          complete {
+            fileJsonOption match {
+              case None => GoogleApiResult[String]("Failed", List("null"))
+              case Some(fileJson: FileJson) => GoogleApiResult[FileJson]("Success", List(fileJson))
+            }
+          }
+        }
+      }
+    } ~
+    path("uploadfile" ) {
+      post {
+        (hv("userId") & hv("encrypt") & hv("AES")) { (userIdOption, encryptOption, AESKeyOption) =>
+          var userId = ""
+          var encrypt = ""
+          var AESKey = ""
+          userIdOption match {
+            case Some(userIdOption) => userId = userIdOption
+            case None =>
+          }
+          encryptOption match {
+            case Some(encryptOption) => encrypt = encryptOption
+            case None =>
+          }
+          AESKeyOption match {
+            case Some(value) => AESKey = value
+            case None =>
+          }
+          entity(as[MultipartFormData]) { formData =>
+            complete {
+              val details = formData.fields.map {
+                case BodyPart(entity, headers) =>
+                  //val content = entity.buffer
+                  val content = new ByteArrayInputStream(entity.data.toByteArray)
+                  var contentType: ContentType = null
+                  entity.toOption match {
+                    case None =>
+                    case Some(HttpEntity.NonEmpty(aContentType, aData)) => contentType = aContentType
+                  }
+                  var fileName: String = ""
+                  headers.foreach {
+                    _ match {
+                      case http.HttpHeaders.`Content-Disposition`(dispositionType: String, parameters: Map[String, String]) =>
+                        parameters.get("filename") match {
+                          case None =>
+                          case Some(name) => fileName = name
+                        }
+                    }
+                  }
+                  //val fileName = headers.find(h => h.is("Content-Disposition")).get.value.split("filename=").last
+                  val fileId = java.util.UUID.randomUUID().toString
+                  val path: String = "server/file/" + fileId
+                  var result = saveAttachment(path, content)
+                  // create photo
+                  val actor = actorRefFactory.actorSelection("/user/handler/UserProfileActor")
+                  val addFileJson = new AddFileJson(userId, fileId, encrypt == "1", AESKey)
+                  val future: Future[AnyRef] = Patterns.ask(actor, UserProfileCase.AddFile(addFileJson), timeout)
+                  val succeed = Await.result(future, timeout.duration)
+                  if (succeed == false) {
+                    result = false
+                  }
+                  (contentType, fileName, result)
+                case _ =>
+              }
+              println(s"""{"status": "Processed POST request, userId=$userId, encrypt=$encrypt, detailts=$details }""")
+              s"""{"status": "Processed POST request, userId=$userId, encrypt=$encrypt, details=$details }"""
+            }
+          }
+        }
+      }
     } ~
     path("group" / "addmembers") {
       post {

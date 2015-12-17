@@ -13,6 +13,7 @@ object UserProfileCase {
   case class GetUserPage(userId: String)
   case class GetUserPost(userId: String)
   case class GetUserFriends(userId: String)
+  case class GetUserFiles(userId: String)
   case class AddUserAlbum(userId: String, albumJson: AlbumJson)
   case class GetPage(pageId: String)
   case class AddPageAlbum(pageId: String, albumJson: AlbumJson)
@@ -22,6 +23,8 @@ object UserProfileCase {
   case class GetAlbum(albumId: String)
   case class AddAlbumPhoto(albumId: String, userId: String, imgId: String)
   case class GetAlbumPhotoList(albumId: String)
+  case class AddFile(addFileJson: AddFileJson)
+  case class GetFile(fileId: String, userId: String)
   case class GetGroup(groupId: String)
   case class AddGroup(addGroupJson: AddGroupJson)
   case class AddGroupMember(addGroupMemberJson: AddGroupMemberJson)
@@ -88,6 +91,18 @@ class UserProfileActor extends Actor {
       case Some(userOption: UserProfile) => user = userOption
     }
     return Some(new FriendListJson(user.friendMap.toMap))
+  }
+
+  def getUserFiles(userId: String) : Option[FileListJson] = {
+    val userOption = DataManager.getUser(userId)
+    var user: UserProfile = null
+    userOption match {
+      case None|null => return None
+      case Some(userOption: UserProfile) => user = userOption
+    }
+    val fileList = collection.mutable.Set[String]()
+    user.fileSet.foreach(fileList.add(_))
+    return Some(new FileListJson(fileList.toSet))
   }
 
   def updateUserAlbum(userId: String, albumJson: AlbumJson) : Boolean = {
@@ -206,6 +221,38 @@ class UserProfileActor extends Actor {
     return Some(new PhotoListJson(photoList.toSet))
   }
 
+  def addFile(addFileJson: AddFileJson) : Boolean = {
+    val userOption = DataManager.getUser(addFileJson.userId)
+    var user: UserProfile = null
+    userOption match {
+      case None => return false
+      case Some(userOption: UserProfile) => user = userOption
+    }
+    val file = new File(addFileJson.userId, addFileJson.fileUrl, addFileJson.encrypt)
+    file.individualAES += (addFileJson.userId -> addFileJson.encryptedAES)
+    DataManager.addFile(file)
+    return true
+  }
+
+  def getFile(fileId: String, userId: String) : Option[FileJson] = {
+    val fileOption = DataManager.getFile(fileId)
+    var file: File = null
+    fileOption match {
+      case None => return None
+      case Some(value: File) => file = value
+    }
+    if (file.encrypt == false)
+      return Some(FileJson(file.fileId, file.fromUserId, file.url, false, ""))
+
+    val AESKeyOption = file.individualAES.get(userId)
+    var AESKey: String = null
+    AESKeyOption match {
+      case None => return None
+      case Some(value) => AESKey = value
+    }
+    return Some(FileJson(file.fileId, file.fromUserId, file.url, true, AESKey))
+  }
+
   def getGroup(groupId: String) : Option[GroupJson] = {
     val groupOption = DataManager.getGroup(groupId)
     var group: Group = null
@@ -268,6 +315,9 @@ class UserProfileActor extends Actor {
     case UserProfileCase.GetUserFriends(userId: String) =>
       log.info("Receive case GetUserFriends")
       sender() ! this.getUserFriends(userId)
+    case UserProfileCase.GetUserFiles(userId:  String) =>
+      log.info("receive case GetuserFiles")
+      sender() ! this.getUserFiles(userId)
     case UserProfileCase.AddUserAlbum(userId: String, albumJson: AlbumJson) =>
       log.info("Receive case AddUserAlbum")
       sender() ! this.updateUserAlbum(userId, albumJson)
@@ -295,6 +345,12 @@ class UserProfileActor extends Actor {
     case UserProfileCase.GetAlbumPhotoList(albumId: String) =>
       log.info("Receive case GetAlbumPhotoList")
       sender() ! this.getAlbumPhotoList(albumId)
+    case UserProfileCase.AddFile(addFileJson: AddFileJson) =>
+      log.info("Receive case AddFile")
+      sender() ! this.addFile(addFileJson)
+    case UserProfileCase.GetFile(fileId: String, userId: String) =>
+      log.info("Receive case GetFile")
+      sender() ! this.getFile(fileId, userId)
     case UserProfileCase.GetGroup(groupId: String) =>
       log.info("Receive case GetGroup")
       sender() ! this.getGroup(groupId)

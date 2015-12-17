@@ -46,11 +46,13 @@ object SimulatorCase {
   case class GetUserProfile(userId: String)
   case class FindStranger(strangerId: String, hopNum: Int)
   case class FoundStranger(success: Boolean, hopNum: Int)
+  case class FindStrangerByFriends(friendListJson: AnyRef, strangerId: String, hopNum: Int)
 }
 
 object DataStore {
   val userIdList = collection.mutable.MutableList[String]()
   val simulatorMap = collection.mutable.Map[String, ActorPath]()
+  var usersNum = 0
 }
 
 class Master(val simulatorNum: Int, val friendNum: Int) extends Actor {
@@ -175,9 +177,9 @@ class Simulator() extends Actor {
       case Success(GoogleApiResult(status: String, results: List[UserProfileJson])) =>
         log.info("The UserProfile is: {} m", List(0))
       case Success(somethingUnexpected) =>
-        log.warning("The Google API call was successful but returned something unexpected: '{}'.", somethingUnexpected)
+        //log.warning("The Google API call was successful but returned something unexpected: '{}'.", somethingUnexpected)
       case Failure(error) =>
-        log.error(error, "Couldn't get elevation")
+        //log.error(error, "Couldn't get elevation")
     }
   }
 
@@ -201,17 +203,20 @@ class Simulator() extends Actor {
         else
           log.info(s"Simulator[$userId] add friend failed")
         friendsNum += 1
+        DataStore.usersNum += 1
+        log.info(s"Simulator[$userId] has add $friendsNum friends")
+        log.info("Total finished add friends request num is ", DataStore.usersNum)
         if (friendsNum == requireFriendsNum) {
           masterRef ! MasterCase.FinishAddFriends()
         }
       case Success(somethingUnexpected) =>
-        log.warning(s"Simulator[$userId] add friend failed '{}'.", somethingUnexpected)
+        //log.warning(s"Simulator[$userId] add friend failed '{}'.", somethingUnexpected)
         friendsNum += 1
         if (friendsNum == requireFriendsNum) {
           masterRef ! MasterCase.FinishAddFriends()
         }
       case Failure(error) =>
-        log.error(error, "Couldn't get elevation")
+        //log.error(error, "Couldn't get elevation")
         friendsNum += 1
         if (friendsNum == requireFriendsNum) {
           masterRef ! MasterCase.FinishAddFriends()
@@ -219,25 +224,23 @@ class Simulator() extends Actor {
     }
   }
 
-  def getFriends() : AnyRef = {
+  def getFriends(strangerId: String, hopNum: Int) = {
     val pipeline = sendReceive ~> unmarshal[GoogleApiResult[FriendListJson]]
     val responseFuture = pipeline {
       Get("http://127.0.0.1:8080/user/friendlist/" + userId)
     }
-    val timeout = new Timeout(Duration.create(5, "seconds"))
+    val timeout = new Timeout(Duration.create(30, "seconds"))
     responseFuture onComplete {
       case Success(GoogleApiResult(status: String, results: List[FriendListJson])) =>
         //log.info("The FriendList is ", List(0))
-        results(0)
+        self ! SimulatorCase.FindStrangerByFriends(Some(results(0)), strangerId, hopNum)
       case Success(somethingUnexpected) =>
-        log.warning("The Google API call was successful but returned something unexpected: '{}'.", somethingUnexpected)
-        None
+        //log.warning("The Google API call was successful but returned something unexpected: '{}'.", somethingUnexpected)
+        self ! SimulatorCase.FindStranger(strangerId, hopNum)
       case Failure(error) =>
-        log.error(error, "Couldn't get elevation")
-        None
+        //log.error(error, "Couldn't get elevation")
+        self ! SimulatorCase.FindStranger(strangerId, hopNum)
     }
-    val result = Await.result(responseFuture, timeout.duration)
-    return Some(result)
   }
 
   def findStranger(strangerId: String, hopNum: Int) = {
@@ -246,22 +249,25 @@ class Simulator() extends Actor {
       masterRef ! SimulatorCase.FoundStranger(true, hopNum)
     }
     else {
-      val friendListJson = this.getFriends()
-      friendListJson match {
-        case None => masterRef !  SimulatorCase.FoundStranger(false, hopNum)
-        case Some(GoogleApiResult(status: String, List(FriendListJson(friendMap: Map[String, String])))) =>
-          log.info(s"Simulatr[$userId] get friendlist $friendMap")
-          friendMap.keys.foreach ((key: String) => {
-            val simulatorPath = DataStore.simulatorMap.get(key)
-            simulatorPath match {
-              case None => masterRef !  SimulatorCase.FoundStranger(false, hopNum)
-              case Some(simulatorPath) =>
-                val simulator = context.actorSelection(simulatorPath.toString)
-                if (hopNum > 10) masterRef !  SimulatorCase.FoundStranger(false, hopNum)
-                else simulator ! SimulatorCase.FindStranger(strangerId, hopNum + 1)
-            }
-          })
-      }
+      this.getFriends(strangerId, hopNum)
+    }
+  }
+
+  def findStrangerByFriends(friendListJson: AnyRef, strangerId: String, hopNum: Int) = {
+    friendListJson match {
+      case None => masterRef !  SimulatorCase.FoundStranger(false, hopNum)
+      case Some(FriendListJson(friendMap: Map[String, String])) =>
+        log.info(s"Simulator[$userId] get friendlist $friendMap")
+        friendMap.keys.foreach ((key: String) => {
+          val simulatorPath = DataStore.simulatorMap.get(key)
+          simulatorPath match {
+            case None => masterRef !  SimulatorCase.FoundStranger(false, hopNum)
+            case Some(simulatorPath) =>
+              val simulator = context.actorSelection(simulatorPath.toString)
+              if (hopNum > 10) masterRef !  SimulatorCase.FoundStranger(false, hopNum)
+              else simulator ! SimulatorCase.FindStranger(strangerId, hopNum + 1)
+          }
+        })
     }
   }
 
@@ -281,6 +287,8 @@ class Simulator() extends Actor {
     case SimulatorCase.FindStranger(strangerId: String, hopNum: Int) =>
       log.info(s"Simulator[$userId] receive message to find [$strangerId]")
       this.findStranger(strangerId, hopNum)
+    case SimulatorCase.FindStrangerByFriends(friendListJson: AnyRef, strangerId: String, hopNum: Int) =>
+      this.findStrangerByFriends(friendListJson, strangerId, hopNum)
     case _ =>
   }
 }
