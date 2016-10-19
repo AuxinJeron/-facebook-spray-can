@@ -1,8 +1,11 @@
 package ServerActor
 
+import javax.crypto.KeyGenerator
+
 import DataCenter._
 import akka.actor.Actor
 import akka.event.Logging
+import com.sun.org.apache.xml.internal.security.utils.Base64
 
 import scala.collection
 import scala.collection.parallel.mutable
@@ -14,6 +17,7 @@ object UserProfileCase {
   case class GetUserPost(userId: String)
   case class GetUserFriends(userId: String)
   case class GetUserFiles(userId: String)
+  case class GetUserGroups(userId: String)
   case class AddUserAlbum(userId: String, albumJson: AlbumJson)
   case class GetPage(pageId: String)
   case class AddPageAlbum(pageId: String, albumJson: AlbumJson)
@@ -26,9 +30,11 @@ object UserProfileCase {
   case class AddFile(addFileJson: AddFileJson)
   case class GetFile(fileId: String, userId: String)
   case class ShareFile(shareFileJson: ShareFileJson)
+  case class ShareGroupFile(shareGroupFileJson: ShareGroupFileJson)
   case class GetGroup(groupId: String)
   case class AddGroup(addGroupJson: AddGroupJson)
   case class AddGroupMember(addGroupMemberJson: AddGroupMemberJson)
+  case class GenSession(userId: String)
 }
 
 class UserProfileActor extends Actor {
@@ -104,6 +110,18 @@ class UserProfileActor extends Actor {
     val fileList = collection.mutable.Set[String]()
     user.fileSet.foreach(fileList.add(_))
     return Some(new FileListJson(fileList.toSet))
+  }
+
+  def getUserGroups(userId: String) : Option[GroupListJson] = {
+    val userOption = DataManager.getUser(userId)
+    var user: UserProfile = null
+    userOption match {
+      case None|null => return None
+      case Some(userOption: UserProfile) => user = userOption
+    }
+    val groupList = collection.mutable.Set[String]()
+    user.groupSet.foreach(groupList.add(_))
+    return Some(new GroupListJson(groupList.toSet))
   }
 
   def updateUserAlbum(userId: String, albumJson: AlbumJson) : Boolean = {
@@ -272,6 +290,35 @@ class UserProfileActor extends Actor {
     return true
   }
 
+  def shareGroupFile(shareGroupFileJson: ShareGroupFileJson) : Boolean = {
+    val fileOption = DataManager.getFile(shareGroupFileJson.fileId)
+    var file: File = null
+    fileOption match {
+      case None => return false
+      case Some(fileOption: File) => file = fileOption
+    }
+    if (file.encrypt == false)
+      return true
+    if (file.fromUserId != shareGroupFileJson.ownerId)
+      return false
+
+    val groupOption = DataManager.groupMap.get(shareGroupFileJson.groupId)
+    var group: Group = null
+    groupOption match {
+      case None => return false
+      case Some(groupOption: Group) => group = groupOption
+    }
+    val AESKey = shareGroupFileJson.AESKey
+    val rsa = group.rsa
+    val enAESKey = rsa.encrypt(AESKey.getBytes)
+    var enAESKeyString = ""
+    for (value <- enAESKey) {
+      enAESKeyString += value + " "
+    }
+    DataManager.shareFile(file, shareGroupFileJson.groupId, enAESKeyString)
+    return true
+  }
+
   def getGroup(groupId: String) : Option[GroupJson] = {
     val groupOption = DataManager.getGroup(groupId)
     var group: Group = null
@@ -318,6 +365,12 @@ class UserProfileActor extends Actor {
     return true
   }
 
+  def genSessionKey(userId: String) : String = {
+    val secretKey = KeyGenerator.getInstance("AES").generateKey()
+    val AESKey = Base64.encode(secretKey.getEncoded)
+    return AESKey
+  }
+
   def receive = {
     case UserProfileCase.AddUserProfile(addUserJson: AddUserJson) =>
       log.info("Receive case AddUserProfile")
@@ -337,6 +390,9 @@ class UserProfileActor extends Actor {
     case UserProfileCase.GetUserFiles(userId:  String) =>
       log.info("receive case GetuserFiles")
       sender() ! this.getUserFiles(userId)
+    case UserProfileCase.GetUserGroups(userId: String) =>
+      log.info("Receive case GetUserGroups")
+      sender() ! this.getUserGroups(userId)
     case UserProfileCase.AddUserAlbum(userId: String, albumJson: AlbumJson) =>
       log.info("Receive case AddUserAlbum")
       sender() ! this.updateUserAlbum(userId, albumJson)
@@ -373,6 +429,9 @@ class UserProfileActor extends Actor {
     case UserProfileCase.ShareFile(shareFileJson: ShareFileJson) =>
       log.info("Receive case ShareFile")
       sender() ! this.shareFile(shareFileJson)
+    case UserProfileCase.ShareGroupFile(shareGroupFileJson: ShareGroupFileJson) =>
+      log.info("Receive case ShareGroupFile")
+      sender() ! this.shareGroupFile(shareGroupFileJson)
     case UserProfileCase.GetGroup(groupId: String) =>
       log.info("Receive case GetGroup")
       sender() ! this.getGroup(groupId)
@@ -382,5 +441,8 @@ class UserProfileActor extends Actor {
     case UserProfileCase.AddGroupMember(addGroupMemberJson: AddGroupMemberJson) =>
       log.info("Receive case AddGroupMember")
       sender() ! this.addGroupMember(addGroupMemberJson)
+    case UserProfileCase.GenSession(userId: String) =>
+      log.info("Receive case GenSession")
+      sender() ! this.genSessionKey(userId)
   }
 }

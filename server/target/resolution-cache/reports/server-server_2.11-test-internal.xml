@@ -7,7 +7,7 @@
 		revision="1.0"
 		conf="test-internal"
 		confs="compile, runtime, test, provided, optional, compile-internal, runtime-internal, test-internal, plugin, sources, docs, pom, scala-tool"
-		date="20151216154213"/>
+		date="20160921153107"/>
 	<dependencies>
 		<module organisation="ch.qos.logback" name="logback-classic">
 			<revision name="1.1.2" status="release" pubdate="20140402154200" resolver="sbt-chain" artresolver="sbt-chain" homepage="http://logback.qos.ch" downloaded="false" searched="false" default="false" conf="default(compile), default, compile, runtime, master" position="19">
@@ -207,12 +207,12 @@
 			</revision>
 		</module>
 		<module organisation="com.typesafe.akka" name="akka-remote_2.11">
-			<revision name="2.3-SNAPSHOT" status="integration" pubdate="20150914063115" resolver="sbt-chain" artresolver="sbt-chain" homepage="http://akka.io/" downloaded="false" searched="true" default="false" conf="default(compile), default, compile, runtime, master" position="3">
+			<revision name="2.3-SNAPSHOT" status="integration" pubdate="20160218060819" resolver="Akka Snapshot Repository" artresolver="Akka Snapshot Repository" homepage="http://akka.io/" downloaded="true" searched="true" default="false" conf="default(compile), default, compile, runtime, master" position="3">
 				<license name="Apache License, Version 2.0" url="http://www.apache.org/licenses/LICENSE-2.0"/>
-				<metadata-artifact status="no" details="" size="3854" time="0" location="/Users/leon/.ivy2/cache/com.typesafe.akka/akka-remote_2.11/ivy-2.3-SNAPSHOT.xml" searched="true" origin-is-local="false" origin-location="http://repo.akka.io/snapshots/com/typesafe/akka/akka-remote_2.11/2.3-SNAPSHOT/akka-remote_2.11-2.3-SNAPSHOT.pom"/>
+				<metadata-artifact status="successful" details="" size="3705" time="229" location="/Users/leon/.ivy2/cache/com.typesafe.akka/akka-remote_2.11/ivy-2.3-SNAPSHOT.xml" searched="true" original-local-location="/Users/leon/.ivy2/cache/com.typesafe.akka/akka-remote_2.11/ivy-2.3-SNAPSHOT.xml.original" origin-is-local="false" origin-location="http://repo.akka.io/snapshots/com/typesafe/akka/akka-remote_2.11/2.3-SNAPSHOT/akka-remote_2.11-2.3-SNAPSHOT.pom"/>
 				<caller organisation="server" name="server_2.11" conf="test-internal, test, optional, compile, provided, runtime" rev="2.3-SNAPSHOT" rev-constraint-default="2.3-SNAPSHOT" rev-constraint-dynamic="2.3-SNAPSHOT" callerrev="1.0"/>
 				<artifacts>
-					<artifact name="akka-remote_2.11" type="jar" ext="jar" status="no" details="" size="1345535" time="0" location="/Users/leon/.ivy2/cache/com.typesafe.akka/akka-remote_2.11/jars/akka-remote_2.11-2.3-SNAPSHOT.jar">
+					<artifact name="akka-remote_2.11" type="jar" ext="jar" status="successful" details="" size="1356977" time="570" location="/Users/leon/.ivy2/cache/com.typesafe.akka/akka-remote_2.11/jars/akka-remote_2.11-2.3-SNAPSHOT.jar">
 						<origin-location is-local="false" location="http://repo.akka.io/snapshots/com/typesafe/akka/akka-remote_2.11/2.3-SNAPSHOT/akka-remote_2.11-2.3-SNAPSHOT.jar"/>
 					</artifact>
 				</artifacts>
@@ -255,13 +255,13 @@
 			</revision>
 		</module>
 		<module organisation="com.typesafe.akka" name="akka-actor_2.11">
-			<revision name="2.3-SNAPSHOT" status="integration" pubdate="20150914062917" resolver="sbt-chain" artresolver="sbt-chain" homepage="http://akka.io/" downloaded="false" searched="true" default="false" conf="default(compile), default, compile, compile(*), runtime, runtime(*), master(compile), master" position="1">
+			<revision name="2.3-SNAPSHOT" status="integration" pubdate="20160218060621" resolver="Akka Snapshot Repository" artresolver="Akka Snapshot Repository" homepage="http://akka.io/" downloaded="true" searched="true" default="false" conf="default(compile), default, compile, compile(*), runtime, runtime(*), master(compile), master" position="1">
 				<license name="Apache License, Version 2.0" url="http://www.apache.org/licenses/LICENSE-2.0"/>
-				<metadata-artifact status="no" details="" size="2677" time="0" location="/Users/leon/.ivy2/cache/com.typesafe.akka/akka-actor_2.11/ivy-2.3-SNAPSHOT.xml" searched="true" origin-is-local="false" origin-location="http://repo.akka.io/snapshots/com/typesafe/akka/akka-actor_2.11/2.3-SNAPSHOT/akka-actor_2.11-2.3-SNAPSHOT.pom"/>
+				<metadata-artifact status="successful" details="" size="1931" time="233" location="/Users/leon/.ivy2/cache/com.typesafe.akka/akka-actor_2.11/ivy-2.3-SNAPSHOT.xml" searched="true" original-local-location="/Users/leon/.ivy2/cache/com.typesafe.akka/akka-actor_2.11/ivy-2.3-SNAPSHOT.xml.original" origin-is-local="false" origin-location="http://repo.akka.io/snapshots/com/typesafe/akka/akka-actor_2.11/2.3-SNAPSHOT/akka-actor_2.11-2.3-SNAPSHOT.pom"/>
 				<caller organisation="server" name="server_2.11" conf="test-internal, test, optional, compile, provided, runtime" rev="2.3-SNAPSHOT" rev-constraint-default="2.3-SNAPSHOT" rev-constraint-dynamic="2.3-SNAPSHOT" callerrev="1.0"/>
 				<caller organisation="com.typesafe.akka" name="akka-remote_2.11" conf="default, compile, runtime, master" rev="2.3-SNAPSHOT" rev-constraint-default="2.3-SNAPSHOT" rev-constraint-dynamic="2.3-SNAPSHOT" callerrev="2.3-SNAPSHOT"/>
 				<artifacts>
-					<artifact name="akka-actor_2.11" type="jar" ext="jar" status="no" details="" size="2793060" time="0" location="/Users/leon/.ivy2/cache/com.typesafe.akka/akka-actor_2.11/jars/akka-actor_2.11-2.3-SNAPSHOT.jar">
+					<artifact name="akka-actor_2.11" type="jar" ext="jar" status="successful" details="" size="2794037" time="1164" location="/Users/leon/.ivy2/cache/com.typesafe.akka/akka-actor_2.11/jars/akka-actor_2.11-2.3-SNAPSHOT.jar">
 						<origin-location is-local="false" location="http://repo.akka.io/snapshots/com/typesafe/akka/akka-actor_2.11/2.3-SNAPSHOT/akka-actor_2.11-2.3-SNAPSHOT.jar"/>
 					</artifact>
 				</artifacts>

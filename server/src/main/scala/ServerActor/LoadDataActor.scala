@@ -12,6 +12,7 @@ import scala.collection.mutable.HashMap
  */
 
 object DataManager {
+  var userSessionMap : HashMap[String, String] = new mutable.HashMap[String, String]()
   var userProfileMap : HashMap[String, UserProfile] = new mutable.HashMap[String, UserProfile]()
   var pageMap : HashMap[String, Page] = new mutable.HashMap[String, Page]()
   var postMap : HashMap[String, Post] = new mutable.HashMap[String, Post]()
@@ -91,6 +92,17 @@ object DataManager {
       case Some(userOption) => user = userOption
         file.individualAES += (user.userId -> enAESKey)
         user.fileSet.add(file.fileId)
+      case None =>
+    }
+  }
+
+  def shareFileToGroup(file: File, groupId: String, enAESkey: String) = {
+    val groupOption = groupMap.get(groupId)
+    var group: Group = null
+    groupOption match {
+      case Some(groupOption) => group = groupOption
+        file.groupAES += (group.groupId -> enAESkey)
+        group.fileSet.add(file.fileId)
       case None =>
     }
   }

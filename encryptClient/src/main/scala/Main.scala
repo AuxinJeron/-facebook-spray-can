@@ -1,5 +1,7 @@
 import java.io.{FileInputStream, BufferedInputStream}
 import java.security.MessageDigest
+import java.text.SimpleDateFormat
+import java.util.Calendar
 import javax.crypto.{KeyGenerator, SecretKey}
 import javax.crypto.spec.SecretKeySpec
 
@@ -57,11 +59,14 @@ object MasterCase {
   case class FinishGetFile()
   case class ShareFile(ownerId: String, fileId: String, inviteeId: String)
   case class FinishShareFile()
+  case class ShareGroupFile(ownerId: String, fileId: String, groupId: String)
+  case class FinishShareGroupFile()
   case class ProcessOperation(args: Array[String])
   case class NextOperation()
 }
 
 object SimulatorCase {
+  case class GetSessionToken()
   case class RegisterUser()
   case class GetUserProfile(userId: String)
   case class FindStranger(strangerId: String, hopNum: Int)
@@ -72,6 +77,8 @@ object SimulatorCase {
   case class FetchFile(url: String, enAESKey: String)
   case class PreShareFile(fileId: String, inviteeId: String)
   case class ShareFile(fileId: String, inviteedId: String, enAESKey: String)
+  case class PreShareGroupFile(fileId: String, groupId: String)
+  case class ShareGroupFile(fileId: String, groupId: String, enAESKey: String)
 }
 
 object DataStore {
@@ -115,6 +122,10 @@ class Master(val simulatorNum: Int, val friendNum: Int) extends Actor {
       else if (method == "share" && args.length >= 4) {
         val inviteeId = args(3)
         self ! MasterCase.ShareFile(userId, file, inviteeId)
+      }
+      else if (method == "sharegroup" && args.length >= 4) {
+        val groupId = args(3)
+        self ! MasterCase.ShareGroupFile(userId, file, groupId)
       }
     }
     else {
@@ -198,6 +209,10 @@ class Master(val simulatorNum: Int, val friendNum: Int) extends Actor {
       this.getActorRef(ownerId) ! SimulatorCase.PreShareFile(fileId, inviteeId)
     case MasterCase.FinishShareFile() =>
       self ! MasterCase.NextOperation()
+    case MasterCase.ShareGroupFile(ownerId: String, fileId:String, groupId: String) =>
+      this.getActorRef(ownerId) ! SimulatorCase.PreShareGroupFile(fileId: String, groupId: String)
+    case MasterCase.FinishShareGroupFile() =>
+      self ! MasterCase.NextOperation()
     case MasterCase.ProcessOperation(args: Array[String]) =>
       println("Receive process operation message.")
       this.processOperation(args)
@@ -224,6 +239,10 @@ class Simulator() extends Actor {
   import system.dispatcher
   import DataCenter.FacebookJsonProtocol._
   import spray.httpx.SprayJsonSupport._
+
+  def getSessionToken() = {
+
+  }
 
   def registerUser(): Unit = {
     val pipeline = sendReceive ~> unmarshal[GoogleApiResult[String]]
@@ -378,6 +397,7 @@ class EncryptSimulator(val userId: String) extends Actor {
   var masterRef: ActorRef = null
   implicit val system = context.system
   val rsa = new RSA(12)
+  val sessionToken = ""
   DataStore.rsaMap += (this.userId -> this.rsa)
 
   import system.dispatcher
@@ -412,8 +432,9 @@ class EncryptSimulator(val userId: String) extends Actor {
     val formData = MultipartFormData(Seq(
       BodyPart(formFile, "img")
     ))
+
     val pipeline = addHeader("userId", userId) ~> addHeader("encrypt", "1") ~> addHeader("AES", enAESKeyString) ~>
-      sendReceive ~> unmarshal[GoogleApiResult[String]]
+      addHeader("publickey", rsa.publicKey.toString()) ~> sendReceive ~> unmarshal[GoogleApiResult[String]]
     val responseFuture = pipeline {
       Post("http://127.0.0.1:8080/uploadfile", formData)
     }
@@ -436,7 +457,26 @@ class EncryptSimulator(val userId: String) extends Actor {
   }
 
   def getFile(fileId: String) = {
-    val pipeline = addHeader("userId", userId) ~> sendReceive ~> unmarshal[GoogleApiResult[FileJson]]
+    val today = Calendar.getInstance().getTime()
+    val minuteFormat = new SimpleDateFormat("mm")
+    val currentMinuteAsString = minuteFormat.format(today)
+
+    val content = userId + " " + currentMinuteAsString
+    val contentHash = HashManager.getHashString(content)
+    val signatureString = content + " " + contentHash
+    val signature = rsa.sign(signatureString.getBytes())
+    var signatureStr = ""
+    for (value <- signature) {
+      signatureStr += value + " "
+    }
+
+    val enSessionToken = rsa.sign(sessionToken.getBytes())
+    var enSessionTokenStr = ""
+    for (value <- signature) {
+      signatureStr += value + " "
+    }
+
+    val pipeline = addHeader("userId", userId) ~> addHeader("sessionToken", enSessionTokenStr) ~> addHeader("signature", signatureStr) ~> sendReceive ~> unmarshal[GoogleApiResult[FileJson]]
     val responseFuture = pipeline {
       Get("http://127.0.0.1:8080/getfile/" + fileId)
     }
@@ -531,6 +571,59 @@ class EncryptSimulator(val userId: String) extends Actor {
       val inviteeIdMap: collection.mutable.HashMap[String, String] = collection.mutable.HashMap[String, String]()
       inviteeIdMap += (inviteeId -> enAESKey)
       Post("http://127.0.0.1:8080/sharefile", new ShareFileJson(fileId, userId, inviteeIdMap.toMap))
+    }
+    responseFuture onComplete {
+      case Success(GoogleApiResult(status: String, results: List[String])) =>
+        if (status == "Succeed")
+          println(s"Simulator[$userId] share file[$fileId] succeed")
+        else
+          println(s"Simulator[$userId] share file[$fileId] failed")
+        masterRef ! MasterCase.FinishShareFile()
+      case Success(somethingUnexpected) =>
+        //log.warning(s"Simulator[$userId] add friend failed '{}'.", somethingUnexpected)
+        log.info(s"Simulator[$userId] share file[$fileId] failed")
+        masterRef ! MasterCase.FinishShareFile()
+      case Failure(error) =>
+        //log.error(error, "Couldn't get elevation")
+        log.info(s"Simulator[$userId] share file[$fileId] failed")
+        masterRef ! MasterCase.FinishShareFile()
+    }
+  }
+
+  def preShareGroupFile(fileId: String, groupId: String) = {
+    val pipeline = addHeader("userId", userId) ~> sendReceive ~> unmarshal[GoogleApiResult[FileJson]]
+    val responseFuture = pipeline {
+      Get("http://127.0.0.1:8080/getfile/" + fileId)
+    }
+    responseFuture onComplete {
+      case Success(GoogleApiResult(status: String, results: List[FileJson])) =>
+        if (status == "Succeed")
+          log.info(s"Simulator[$userId] get file [$fileId] succeed")
+        if (results.length > 0) {
+          results(0) match {
+            case (fileJson: FileJson) =>
+              println("File enAES is " + fileJson.encryptedAES)
+              val AESKey = new String(rsa.decrypt(fileJson.encryptedAES.split(" ").map(x => BigInt(x))))
+              self ! SimulatorCase.ShareGroupFile(fileId, groupId, AESKey)
+          }
+        }
+        else {
+          log.info(s"Simulator[$userId] get file [$fileId] failed")
+          masterRef ! MasterCase.FinishGetFile()
+        }
+      case Success(somethingUnexpected) =>
+        log.info(s"Simulator[$userId] get file [$fileId] failed")
+        masterRef ! MasterCase.FinishGetFile()
+      case Failure(error) =>
+        log.info(s"Simulator[$userId] get file [$fileId] failed")
+        masterRef ! MasterCase.FinishGetFile()
+    }
+  }
+
+  def shareGroupFile(fileId: String, groupId: String, AESKey: String) = {
+    val pipeline = sendReceive ~> unmarshal[GoogleApiResult[String]]
+    val responseFuture = pipeline {
+      Post("http://127.0.0.1:8080/sharegroupfile", new ShareGroupFileJson(fileId, userId, groupId, AESKey))
     }
     responseFuture onComplete {
       case Success(GoogleApiResult(status: String, results: List[String])) =>
